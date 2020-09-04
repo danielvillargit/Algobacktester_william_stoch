@@ -56,7 +56,7 @@ class Backtester:
         
     def importText(self):
         #import and cleanup
-        self.r = pd.read_csv(r"C:\Users\Daniel\.spyder-py3\backtester\IVE_tickbidask.txt",header=None)
+        self.r = pd.read_csv(r"C:\Users\Daniel\.spyder-py3\stock_data\IVE_tickbidask.txt",header=None)
         self.df = pd.DataFrame(self.r)
         self.df.columns = ['Date','Time','Price','Bid','Ask','Size']
         self.df = self.df[self.df['Price'] > 25 ]
@@ -70,27 +70,22 @@ class Backtester:
         
         tdelta = self.end_date - self.beg_date
         t=0
-        while t < tdelta:
-            if t==0:
-                self.year_.append(self.beg_date)
+        self.df = self.df.append(pd.Series(data=None,index = ['DistDay']),ignore_index = True)
+        day_count = 1
+        for i in range(len(self.df['Date'])+1):
+                       
+            if self.df['Date'].iloc[i+1] == self.df['Date'].iloc[i]:
+                self.df['DistDay'].iloc[i] = day_count
+                self.df['DistDay'].iloc[i+1] = day_count
             else:
-                change_ =self.beg_date + relativedelta(years=1)
-                self.year_.append(change_)
-            t = t + (self.end_date - change_)
-        #self.r = relativedelta(years = self.end_date.year - self.beg_date.year) 
+                self.df['DistDay'].iloc[i] = day_count
+                day_count+= 1
+                self.df['DistDay'].iloc[i+1] = day_count
+        #This loop takes forever...since it's trying to do for 1 million records
         
-        #print(self.beg_date)
-        #print(self.end_date)
-        self.rep_ = str(self.beg_date)
-        self.rep_ = self.rep_[0:10]
-    
-        while self.df[self.df['Date' == self.rep_]]:
-           self.year_.append(self.rep_)
-           self.rep_.replace(year = self.rep_ + 1)
-           print(self.rep_)
-          
         
-        print(self.df[self.df['Date'] == self.beg_date.replace(year = self.beg_date.year + 1) ].iloc[0,2])
+        
+        
         
     def Plotdata(self):
         x_ = self.df.index
@@ -100,7 +95,8 @@ class Backtester:
 
 
 if __name__ == "__main__":
-    c = AlgoBackTest()
+    c = Backtester()
     c.importText()
-    c.Stats()
+    c.Sharpe()
+    c.Plotdata()
     
