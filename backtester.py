@@ -37,7 +37,6 @@ class Backtester:
     def __init__(self):
         print("Hello, am backtest Daddy")
         
-        
     
     def Stats(self):
         
@@ -56,12 +55,18 @@ class Backtester:
         
     def importText(self):
         #import and cleanup
-        self.r = pd.read_csv(r"C:\Users\Daniel\.spyder-py3\stock_data\IVE_tickbidask.txt",header=None)
+        self.r = pd.read_csv(
+            "IVE_tickbidask.txt",
+            names=['Date','Time','Price','Bid','Ask','Size'], 
+            # converters={'Date':pd.to_datetime},
+            parse_dates={'Datetime' : [0, 1]},
+            infer_datetime_format=True,
+            nrows=50)
         self.df = pd.DataFrame(self.r)
-        self.df.columns = ['Date','Time','Price','Bid','Ask','Size']
-        self.df = self.df[self.df['Price'] > 25 ]
+        # self.df = self.df[self.df['Price'] > 25 ]
         
-        self.df['Date'] = pd.to_datetime(self.df['Date'], format = '%m/%d/%Y')
+        # self.df['Date'] = pd.to_datetime(self.df['Date'], format = '%m/%d/%Y')
+        print(self.df)
         
     def Sharpe(self):
         self.year_ = []
@@ -97,6 +102,6 @@ class Backtester:
 if __name__ == "__main__":
     c = Backtester()
     c.importText()
-    c.Sharpe()
+    # c.Sharpe()
     c.Plotdata()
     
