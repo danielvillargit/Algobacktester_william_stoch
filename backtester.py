@@ -35,7 +35,7 @@ import math
 class Backtester:
     
     def __init__(self):
-        print("Hello, am backtest Daddy")
+        print("Backtest instance created")
         
         
     
